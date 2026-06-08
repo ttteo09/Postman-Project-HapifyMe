@@ -1,0 +1,232 @@
+{
+  "info": {
+    "_postman_id": "78014346-80b7-45ef-92e1-93736e86ddbd",
+    "name": "Tema 18 -  Teo",
+    "description": "### Welcome to Postman! This is your first collection.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Register User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Generăm un email unic O SINGURĂ DATĂ, la începutul fluxului\r",
+              "pm.environment.set(\"userEmail\", \"teodora\" + Date.now() + \"@test.com\");"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"{{userEmail}}\",\r\n  \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/post",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// CURĂȚAT: Nu mai generăm alt email aici, îl refolosim pe cel de la Register!"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "// EXTRAGERE DINAMICĂ TOKEN (Chaining real)\r",
+              "try {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    if (jsonData.token) {\r",
+              "        pm.environment.set(\"authToken\", jsonData.token);\r",
+              "    }\r",
+              "} catch(e) {\r",
+              "    // Dacă serverul tău trimite token-ul în Header-ul Authorization, îl luăm de acolo\r",
+              "    var tokenHeader = pm.response.headers.get(\"Authorization\");\r",
+              "    if (tokenHeader) {\r",
+              "        var cleanToken = tokenHeader.replace(\"Bearer \", \"\");\r",
+              "        pm.environment.set(\"authToken\", cleanToken);\r",
+              "    }\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"{{userEmail}}\",\r\n  \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/post",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Profile",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// CURĂȚAT: Fără generare de email fals"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Verificare email identic\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "    var emailSalvat = pm.environment.get(\"userEmail\");\r",
+              "    pm.expect(pm.response.text()).to.include(emailSalvat);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"{{userEmail}}\",\r\n    \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/get",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "get"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Account",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// CURĂȚAT: Fără generare de email fals"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"{{userEmail}}\",\r\n    \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/delete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "delete"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
