@@ -1,0 +1,246 @@
+{
+  "info": {
+    "_postman_id": "78014346-80b7-45ef-92e1-93736e86ddbd",
+    "name": "Tema 18 -  Teo",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54578622",
+    "_collection_link": "https://go.postman.co/collection/54578622-78014346-80b7-45ef-92e1-93736e86ddbd?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Register User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Generăm un timestamp unic ca să nu avem niciodată e-mailuri sau useri duplicați\r",
+              "const timestamp = Date.now();\r",
+              "const dynamicEmail = \"teo_postman_\" + timestamp + \"@hapifyme.com\";\r",
+              "const dynamicUsername = \"user_teo_\" + timestamp;\r",
+              "\r",
+              "// Salvăm variabilele direct în Environment pentru a le folosi în Body și la testele următoare\r",
+              "pm.environment.set(\"registeredEmail\", dynamicEmail);\r",
+              "pm.environment.set(\"registeredUsername\", dynamicUsername);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"{{registeredUsername}}\",\r\n  \"email\": \"{{registeredEmail}}\",\r\n  \"password\": \"Password123!\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/users/register",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "users",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const timestamp = Date.now();\r",
+              "pm.environment.set(\"userEmail\", \"teodora\" + timestamp + \"@test.com\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.environment.set(\"authToken\", \"token_secret_teodora_123\");\r",
+              "pm.environment.set(\"userID\", \"555\"); \r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"{{userEmail}}\",\r\n  \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/post",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Profile",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const timestamp = Date.now();\r",
+              "pm.environment.set(\"userEmail\", \"teodora\" + timestamp + \"@test.com\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Verificare email identic\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "    var emailSalvat = pm.environment.get(\"userEmail\");\r",
+              "    pm.expect(pm.response.text()).to.include(emailSalvat);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"{{userEmail}}\",\r\n    \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/get",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "get"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Account",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const timestamp = Date.now();\r",
+              "pm.environment.set(\"userEmail\", \"teodora\" + timestamp + \"@test.com\");"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"{{userEmail}}\",\r\n    \"password\": \"parolaMea123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/delete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "delete"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
